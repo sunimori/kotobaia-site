@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://kotobaia.com/sitemap.xml

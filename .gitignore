@@ -1,0 +1,10 @@
+.DS_Store
+__pycache__/
+*.pyc
+.env
+.env.*
+!.env.example
+.wrangler/
+node_modules/
+*.tar.gz
+*.tgz
