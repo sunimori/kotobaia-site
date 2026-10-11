@@ -1,0 +1,21 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": [
+          "96S67W899L.com.sunimori.kotobaia.app"
+        ],
+        "components": [
+          {
+            "/": "/d/*",
+            "comment": "Shared wordbooks; the deck data is in the URL fragment"
+          },
+          {
+            "/": "/f/*",
+            "comment": "Friend invites"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -23,12 +23,12 @@ header = f'''<a class="skip" href="#main">{t('Skip to content')}</a>
 
 footer = f'''<footer class="site-footer"><div class="wrap"><div class="footer-top"><div><a class="brand" href="/"><img src="/assets/kotobaia-icon-small.png" alt="" width="38" height="38">Kotobaia</a>{t('A Sunimori app.','p')}</div><div class="footer-links"><a href="/support/">{t('Support')}</a><a href="/privacy/">{t('Privacy policy')}</a><a href="/terms/">{t('Terms of use')}</a><button class="language-open" aria-haspopup="dialog" aria-controls="language-dialog">{globe}{t('Language')}</button></div></div><div class="footer-bottom"><span>© 2026 Sunimori</span><a href="/website-privacy/">{t('Website privacy')}</a><a href="mailto:support@sunimori.com?subject=Kotobaia%20Support">support@sunimori.com {arrow}</a></div></div></footer>'''
 
-def page(route, title, description, content, body_class=''):
+def page(route, title, description, content, body_class='', head_extra=''):
     canonical = 'https://kotobaia.com' + route
     filename = DIST / (route.lstrip('/') + 'index.html')
     if route == '/404.html': filename = DIST / '404.html'
     filename.parent.mkdir(parents=True, exist_ok=True)
-    filename.write_text(f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{escape(title)}</title><meta name="description" content="{escape(description,quote=True)}"><meta name="theme-color" content="#f6f8fc"><link rel="canonical" href="{canonical}"><meta property="og:type" content="website"><meta property="og:site_name" content="Kotobaia"><meta property="og:title" content="{escape(title,quote=True)}"><meta property="og:description" content="{escape(description,quote=True)}"><meta property="og:url" content="{canonical}"><link rel="icon" href="/assets/kotobaia-icon-small.png" type="image/png"><link rel="stylesheet" href="/style.css?v=1"><script defer src="/locales.js?v=1"></script><script defer src="/app.js?v=1"></script></head><body class="{body_class}">{header}<main id="main">{content}</main>{footer}</body></html>''')
+    filename.write_text(f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{escape(title)}</title><meta name="description" content="{escape(description,quote=True)}"><meta name="theme-color" content="#f6f8fc"><link rel="canonical" href="{canonical}"><meta property="og:type" content="website"><meta property="og:site_name" content="Kotobaia"><meta property="og:title" content="{escape(title,quote=True)}"><meta property="og:description" content="{escape(description,quote=True)}"><meta property="og:url" content="{canonical}"><link rel="icon" href="/assets/kotobaia-icon-small.png" type="image/png"><link rel="stylesheet" href="/style.css?v=1"><script defer src="/locales.js?v=1"></script><script defer src="/app.js?v=1"></script>{head_extra}</head><body class="{body_class}">{header}<main id="main">{content}</main>{footer}</body></html>''')
 
 panels = [
     ('words','Your words','Start with something useful.','Build a collection of words you want to use. Hear them, follow the pronunciation, and find meaning in the example.','app-words.png','The Kotobaia vocabulary screen, showing pronunciation, meaning and an example sentence.','ありがとう','arigatō'),
@@ -62,6 +62,30 @@ for route,title,description in [
     routes.append(('/'+route+'/',title))
 not_found=f'<div class="wrap not-found"><p class="eyebrow">404 / KOTOBAIA</p><h1>{t("Page not found")}</h1><a class="button" href="/">Kotobaia {arrow}</a></div>'
 page('/404.html','Page Not Found — Kotobaia','Return to the Kotobaia website.',not_found,'document-page')
+
+# Shared wordbook / friend-invite landing pages. The app puts the deck data or invite code after "#",
+# which browsers never send to the server; dist/share.js reads it on the visitor's device.
+# With the app installed, iOS/macOS open these links in the app directly (universal links, see the AASA below).
+app_store = 'https://apps.apple.com/app/id6797514438'
+share_head = '<meta name="robots" content="noindex"><script defer src="/share.js?v=1"></script>'
+share_actions = f'''<div class="share-actions"><a class="button" data-open-app href="#">{t('Open in Kotobaia')} {arrow}</a><a class="button outline" data-app-store href="{app_store}">{t('Get Kotobaia on the App Store')} {arrow}</a></div>'''
+deck_page = f'''<div class="wrap share-page" data-share-page="deck"><p class="eyebrow">SHARED / KOTOBAIA</p><h1>{t('A wordbook for you')}</h1>{t('A friend shared this Kotobaia wordbook with you.','p','share-lead')}
+<section class="share-card share-ready" hidden><h2 class="deck-name"></h2><p class="deck-meta"><span class="deck-count"></span> {t('words')}</p><ol class="deck-words"></ol></section>
+<p class="share-note share-nopreview" hidden>{t("Preview isn't available in this browser, but the wordbook will open in the app.")}</p><p class="share-error" hidden>{t('This link looks incomplete. Ask your friend to share it again.')}</p>
+{share_actions}{t('Already have Kotobaia? Tap “Open in Kotobaia” to import this wordbook.','p','share-hint')}{t("The word list travels inside this link. It isn't stored on our servers or published anywhere.",'p','share-note')}</div>'''
+page('/d/', 'Shared wordbook — Kotobaia', 'A Kotobaia wordbook shared with you. Open it in the app or get Kotobaia on the App Store.', deck_page, 'document-page share-body', share_head)
+invite_page = f'''<div class="wrap share-page" data-share-page="friend"><p class="eyebrow">INVITE / KOTOBAIA</p><h1>{t("You're invited")}</h1>{t('A friend invited you to learn Japanese together on Kotobaia.','p','share-lead')}
+<section class="share-card share-ready" hidden>{t('Invite code','p','invite-label')}<p class="invite-code" translate="no"></p></section>
+<p class="share-error" hidden>{t('This invite link looks incomplete. Ask your friend to share it again.')}</p>
+{share_actions}{t('With Kotobaia installed, tap “Open in Kotobaia” to add your friend, or enter the code on the Friends page.','p','share-hint')}</div>'''
+page('/f/', 'Friend invite — Kotobaia', 'A friend invited you to Kotobaia. Open the invite in the app or get Kotobaia on the App Store.', invite_page, 'document-page share-body', share_head)
+# Universal links: Apple's CDN fetches this file (https, no redirect, no extension). Only /d/ and /f/ open the app.
+association = {'applinks': {'details': [{'appIDs': ['96S67W899L.com.sunimori.kotobaia.app'], 'components': [
+    {'/': '/d/*', 'comment': 'Shared wordbooks; the deck data is in the URL fragment'},
+    {'/': '/f/*', 'comment': 'Friend invites'},
+]}]}}
+(DIST/'.well-known').mkdir(exist_ok=True)
+(DIST/'.well-known'/'apple-app-site-association').write_text(json.dumps(association, indent=2)+'\n')
 (DIST/'robots.txt').write_text('User-agent: *\nAllow: /\nSitemap: https://kotobaia.com/sitemap.xml\n')
 (DIST/'sitemap.xml').write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'+''.join(f'<url><loc>https://kotobaia.com{route}</loc></url>' for route,_ in routes)+'</urlset>\n')
 (DIST/'.nojekyll').touch()
@@ -72,4 +96,4 @@ if extra.exists():
     additions=json.loads(extra.read_text())
     for locale in dictionaries: dictionaries[locale].update(additions[locale])
 (DIST/'locales.js').write_text('window.KOTOBAIA_TRANSLATIONS = '+json.dumps(dictionaries,ensure_ascii=False,separators=(',',':'))+';\n')
-print('Built Kotobaia homepage, four supporting pages, 404, sitemap and translations.')
+print('Built Kotobaia homepage, four supporting pages, share/invite pages, 404, sitemap, app-site association and translations.')
