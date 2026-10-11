@@ -24,9 +24,11 @@ jobs:
       - run: python3 build.py
       - run: python3 check.py
       - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v4
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: dist
+          # v4 起默认丢弃以点开头的文件；universal links 需要 dist/.well-known/apple-app-site-association。
+          include-hidden-files: true
       - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4

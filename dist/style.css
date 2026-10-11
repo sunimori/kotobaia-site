@@ -18,3 +18,26 @@ dialog{padding:35px;border:1px solid var(--line);border-radius:22px;background:v
 .experience-panels[data-active=library]{background:#f2eff8}
 @media(max-width:760px){.hero-photo .hero-device{width:176px;bottom:-54px;inset-inline-end:13%}.hero-photo>.photo-label{max-width:100px}}
 @media(max-width:370px){.hero-photo .hero-device{width:157px;inset-inline-end:8%}.hero-photo>.photo-label{max-width:80px;font-size:9px}}
+/* Shared wordbook / friend-invite landing pages (/d/, /f/) */
+.share-page{max-width:760px;padding-block:80px 110px}
+.share-page [hidden]{display:none!important}
+.share-page h1{font-size:clamp(40px,6vw,64px);margin-block:0 18px}
+.share-lead{color:var(--muted);font-size:18px;margin:0 0 30px}
+.share-card{background:white;border:1px solid var(--line);border-radius:24px;padding:26px 28px;margin-bottom:26px}
+.share-card h2{font-size:clamp(26px,3.4vw,34px);line-height:1.2;letter-spacing:-.02em;margin:0 0 6px;overflow-wrap:anywhere}
+.deck-meta{color:var(--muted);margin:0 0 18px;font-size:15px}
+.deck-words{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.deck-words li{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;border-top:1px solid var(--line);padding-top:10px}
+.deck-word{font-size:20px;font-weight:600;overflow-wrap:anywhere}
+.deck-reading{color:var(--muted);font-size:14px}
+.deck-meaning{font-size:15px;flex-basis:100%}
+.deck-more{color:var(--muted);font-size:14px}
+.invite-label{color:var(--muted);font-size:14px;margin:0}
+.invite-code{font:600 clamp(30px,6vw,44px)/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.12em;margin:6px 0 0}
+.share-actions{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:22px}
+.share-actions .button{margin-top:0}
+.button.outline{background:transparent;color:var(--blue)}
+.button.outline:hover{background:#e7efff}
+.share-hint,.share-note{color:var(--muted);font-size:14px;margin:8px 0 0}
+.share-error{background:#fff4e5;border:1px solid #ffd59e;border-radius:16px;padding:14px 18px;margin-bottom:22px}
+@media (max-width:560px){.share-page{padding-block:48px 80px}.share-card{padding:20px}.share-actions .button{width:100%}}
